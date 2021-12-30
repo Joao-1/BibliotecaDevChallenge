@@ -2,9 +2,9 @@ import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import axios from "axios";
 import { readFile } from "fs";
-import { Repository } from "typeorm";
 import { promisify } from "util";
 import { Book } from "./books.entity";
+import { BookRepository } from "./books.repository";
 import { IBook } from "./interfaces/book.interface";
 
 require("dotenv").config();
@@ -13,7 +13,7 @@ require("dotenv").config();
 export class BooksService {
 	constructor(
 		@InjectRepository(Book)
-		private BooksRepository: Repository<Book>
+		private BooksRepository: BookRepository
 	) {}
 
 	async uploadImage(imagePath: string) {
@@ -31,5 +31,9 @@ export class BooksService {
 		return data.data.link;
 	}
 
-	async registerBook(book: IBook) {}
+	async registerBook(book: IBook) {
+		if (await this.BooksRepository.checkIfBookAlreadyExists(book.title)) {
+			return;
+		}
+	}
 }

@@ -1,4 +1,15 @@
-import { Body, Controller, Delete, Get, Post, Put, Res, UploadedFile, UseInterceptors } from "@nestjs/common";
+import {
+	Body,
+	Controller,
+	Delete,
+	Get,
+	HttpStatus,
+	Post,
+	Put,
+	Res,
+	UploadedFile,
+	UseInterceptors,
+} from "@nestjs/common";
 import { FileInterceptor } from "@nestjs/platform-express";
 import { randomUUID } from "crypto";
 import { Response } from "express";
@@ -29,7 +40,7 @@ export class BooksController {
 		@Res() res: Response
 	) {
 		const imgUrl = await this.booksService.uploadImage(file.path);
-		res.status(201).json(imgUrl);
+		res.status(HttpStatus.CREATED).json(imgUrl);
 	}
 
 	@Get()

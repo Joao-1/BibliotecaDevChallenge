@@ -6,6 +6,9 @@ export class Book {
 	id: number;
 
 	@Column()
+	title: string;
+
+	@Column()
 	publishingCompany: string;
 
 	@Column()

@@ -1,5 +1,10 @@
+/* eslint-disable max-classes-per-file */
 import { HttpException } from "@nestjs/common";
-import { ServerError } from "./errorFilter";
+
+export class ServerError {
+	// eslint-disable-next-line no-unused-vars
+	constructor(public message: string, public error: unknown, public place: string) {}
+}
 
 export class DataBaseError extends ServerError {
 	constructor(message: string, error: unknown, repository: string) {

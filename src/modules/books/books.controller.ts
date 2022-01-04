@@ -16,12 +16,13 @@ import { randomUUID } from "crypto";
 import { Response } from "express";
 import { diskStorage } from "multer";
 import { extname } from "path";
-import { BooksService } from "./books.service";
-import { CreateBookDto } from "./dto/createBook.dto";
-import { IBook } from "./interfaces/book.interface";
+import BooksService from "./books.service";
+import CreateBookDto from "./dto/createBook.dto";
+import IBook from "./interfaces/book.interface";
 
 @Controller("books")
-export class BooksController {
+export default class BooksController {
+	// eslint-disable-next-line no-unused-vars
 	constructor(private booksService: BooksService) {}
 
 	@Post()
@@ -37,6 +38,7 @@ export class BooksController {
 		})
 	)
 	async create(
+		// eslint-disable-next-line no-undef
 		@UploadedFile() file: Express.Multer.File,
 		@Body(new ValidationPipe()) createBookDto: CreateBookDto,
 		@Res() res: Response

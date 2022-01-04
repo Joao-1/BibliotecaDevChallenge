@@ -1,18 +1,25 @@
+import logger from "logs/logger";
 import { AbstractRepository, EntityRepository } from "typeorm";
-import { DataBaseError } from "./../../helpers/nestHelpers/exceptions/errorsExceptions";
-import { Book } from "./books.entity";
-import { IBook } from "./interfaces/book.interface";
+import { DataBaseError } from "../../helpers/nestHelpers/exceptions/errorsExceptions";
+import Book from "./books.entity";
+import IBook from "./interfaces/book.interface";
 
 @EntityRepository(Book)
-export class BookRepository extends AbstractRepository<Book> {
+export default class BookRepository extends AbstractRepository<Book> {
 	async create(book: IBook) {
 		try {
-			return this.repository.insert({
-				title: book.title,
-				publishingCompany: book.publishingCompany,
-				imgURL: book.imageURL,
-				authors: book.authors.toString(),
-			});
+			const newBook = await this.repository
+				.createQueryBuilder()
+				.insert()
+				.values({
+					title: book.title,
+					publishingCompany: book.publishingCompany,
+					imgURL: book.imageURL,
+					authors: book.authors.toString(),
+				})
+				.returning("*")
+				.execute();
+			return newBook.raw[0];
 		} catch (error) {
 			throw new DataBaseError(
 				"An error occurred when trying to insert a new record into the database",
@@ -23,8 +30,9 @@ export class BookRepository extends AbstractRepository<Book> {
 	}
 
 	async findByName(firstName: string, lastName: string) {
-		const test = await this.repository.findOne();
-		return test;
+		logger.debug.debug(firstName, lastName);
+		// const test = await this.repository.findOne({ title: firstName, author: lastName });
+		// return test;
 	}
 
 	async checkIfBookAlreadyExists(bookTitle: string) {

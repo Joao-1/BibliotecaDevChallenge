@@ -2,14 +2,15 @@ import { Injectable } from "@nestjs/common";
 import axios from "axios";
 import { readFile } from "fs";
 import { promisify } from "util";
-import { RegisterBookError, ServicesProvidersError } from "./../../helpers/nestHelpers/exceptions/errorsExceptions";
-import { BookRepository } from "./books.repository";
-import { IBook } from "./interfaces/book.interface";
+import { RegisterBookError, ServicesProvidersError } from "../../helpers/nestHelpers/exceptions/errorsExceptions";
+import BookRepository from "./books.repository";
+import IBook from "./interfaces/book.interface";
 
 require("dotenv").config();
 
 @Injectable()
-export class BooksService {
+export default class BooksService {
+	// eslint-disable-next-line no-unused-vars
 	constructor(private BooksRepository: BookRepository) {}
 
 	async uploadImage(imagePath: string) {

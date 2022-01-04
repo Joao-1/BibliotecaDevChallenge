@@ -9,7 +9,9 @@ const errorFormat = printf(({ message, ...data }) => {
 		place: string;
 		requestDetails: { path: string; method: string };
 	};
-	return `{timestamp: ${data.timestamp}, message: ${_data.msg}, local: ${_data.place}, requestDetails: {${_data}} details: {${_data.error}}}`;
+	return `{timestamp: ${data.timestamp}, message: ${_data.msg}, place: ${
+		_data.place
+	}, requestDetails: {${JSON.stringify(_data.requestDetails)}} details: ${JSON.stringify(_data.error)}}}`;
 });
 
 const debug = createLogger({

@@ -9,6 +9,7 @@ import {
 	Res,
 	UploadedFile,
 	UseInterceptors,
+	ValidationPipe,
 } from "@nestjs/common";
 import { FileInterceptor } from "@nestjs/platform-express";
 import { randomUUID } from "crypto";
@@ -17,12 +18,13 @@ import { diskStorage } from "multer";
 import { extname } from "path";
 import { BooksService } from "./books.service";
 import { CreateBookDto } from "./dto/createBook.dto";
+import { IBook } from "./interfaces/book.interface";
 
 @Controller("books")
 export class BooksController {
 	constructor(private booksService: BooksService) {}
 
-	@Post("upload")
+	@Post()
 	@UseInterceptors(
 		FileInterceptor("file", {
 			storage: diskStorage({
@@ -36,11 +38,14 @@ export class BooksController {
 	)
 	async create(
 		@UploadedFile() file: Express.Multer.File,
-		@Body() createBookdto: CreateBookDto,
+		@Body(new ValidationPipe()) createBookDto: CreateBookDto,
 		@Res() res: Response
 	) {
 		const imgUrl = await this.booksService.uploadImage(file.path);
-		res.status(HttpStatus.CREATED).json(imgUrl);
+		const book = createBookDto as IBook;
+		book.imageURL = imgUrl;
+		const newBook = await this.booksService.registerBook(book);
+		res.status(HttpStatus.CREATED).json({ sucess: "true", book: newBook });
 	}
 
 	@Get()

@@ -1,10 +1,25 @@
 import { AbstractRepository, EntityRepository } from "typeorm";
+import { DataBaseError } from "./../../helpers/nestHelpers/exceptions/errorsExceptions";
 import { Book } from "./books.entity";
+import { IBook } from "./interfaces/book.interface";
 
 @EntityRepository(Book)
 export class BookRepository extends AbstractRepository<Book> {
-	createAndSave(firstName: string, lastName: string) {
-		this.repository.create();
+	async create(book: IBook) {
+		try {
+			return this.repository.insert({
+				title: book.title,
+				publishingCompany: book.publishingCompany,
+				imgURL: book.imageURL,
+				authors: book.authors.toString(),
+			});
+		} catch (error) {
+			throw new DataBaseError(
+				"An error occurred when trying to insert a new record into the database",
+				error,
+				"BookRepository"
+			);
+		}
 	}
 
 	async findByName(firstName: string, lastName: string) {
@@ -13,7 +28,7 @@ export class BookRepository extends AbstractRepository<Book> {
 	}
 
 	async checkIfBookAlreadyExists(bookTitle: string) {
-		const possibleBooks = await this.repository.find({ where: { name: bookTitle } });
+		const possibleBooks = await this.repository.find({ where: { title: bookTitle } });
 		return possibleBooks.some((book) => {
 			return bookTitle === book.title;
 		});

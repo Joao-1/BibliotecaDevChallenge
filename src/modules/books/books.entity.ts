@@ -15,5 +15,5 @@ export class Book {
 	imgURL: string;
 
 	@Column()
-	authors: string[];
+	authors: string;
 }

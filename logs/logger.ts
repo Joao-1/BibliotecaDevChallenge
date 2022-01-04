@@ -3,8 +3,13 @@ import { createLogger, format, transports } from "winston";
 const { combine, timestamp, prettyPrint, json, printf } = format;
 
 const errorFormat = printf(({ message, ...data }) => {
-	const _data = message as unknown as { msg: string; _error: string; label: string };
-	return `{timestamp: ${data.timestamp}, message: ${_data.msg}, local: ${_data.label}, details: {${_data._error}}}`;
+	const _data = message as unknown as {
+		msg: string;
+		error: unknown;
+		place: string;
+		requestDetails: { path: string; method: string };
+	};
+	return `{timestamp: ${data.timestamp}, message: ${_data.msg}, local: ${_data.place}, requestDetails: {${_data}} details: {${_data.error}}}`;
 });
 
 const debug = createLogger({

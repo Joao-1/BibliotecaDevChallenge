@@ -23,7 +23,7 @@ export namespace ServicesProvidersError {
 export namespace RegisterBookError {
 	export class BookAlreadyExists extends HttpException {
 		constructor(bookTitle: string) {
-			super(`There is already a book with ${bookTitle} title`, 422);
+			super({ statusCode: 422, message: `There is already a book with ${bookTitle} title` }, 422);
 		}
 	}
 }
@@ -31,7 +31,7 @@ export namespace RegisterBookError {
 export namespace DeleteBookError {
 	export class BookWithThisIdDoesNotExists extends HttpException {
 		constructor(bookId: number) {
-			super(`There is no book id ${bookId} registered in the database`, 422);
+			super({ statusCode: 422, message: `There is no book id ${bookId} registered in the database` }, 422);
 		}
 	}
 }

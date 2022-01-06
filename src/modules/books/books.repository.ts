@@ -22,7 +22,7 @@ export default class BookRepository extends AbstractRepository<Book> {
 		} catch (error) {
 			throw new DataBaseError(
 				"An error occurred when trying to insert a new record into the database",
-				error.message,
+				error,
 				"BookRepository"
 			);
 		}
@@ -34,7 +34,7 @@ export default class BookRepository extends AbstractRepository<Book> {
 		} catch (error) {
 			throw new DataBaseError(
 				"An error occurred while trying to get all books from the database",
-				error.message,
+				error,
 				"BookRepository"
 			);
 		}
@@ -53,7 +53,7 @@ export default class BookRepository extends AbstractRepository<Book> {
 		} catch (error) {
 			throw new DataBaseError(
 				"An error occurred when trying to update a book in the database.",
-				error.message,
+				error,
 				"BookRepository"
 			);
 		}
@@ -65,7 +65,7 @@ export default class BookRepository extends AbstractRepository<Book> {
 		} catch (error) {
 			throw new DataBaseError(
 				"An error occurred when trying to delete a book in the database.",
-				error.message,
+				error,
 				"BookRepository"
 			);
 		}
@@ -78,7 +78,7 @@ export default class BookRepository extends AbstractRepository<Book> {
 		} catch (error) {
 			throw new DataBaseError(
 				"An error occurred when trying to verify the existence of a book by title",
-				error.message,
+				error,
 				"BookRepository"
 			);
 		}
@@ -91,7 +91,7 @@ export default class BookRepository extends AbstractRepository<Book> {
 		} catch (error) {
 			throw new DataBaseError(
 				"An error occurred when trying to verify the existence of a book by id",
-				error.message,
+				error,
 				"BookRepository"
 			);
 		}

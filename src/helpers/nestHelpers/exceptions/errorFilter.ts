@@ -23,12 +23,7 @@ export default class HttpErrorFilter implements ExceptionFilter {
 			message: "Internal Server Error",
 		} as IErrorResponse;
 
-		if (exception instanceof HttpException) {
-			responseDefault = {
-				statusCode: exception.getStatus(),
-				message: exception.message,
-			} as IErrorResponse;
-		}
+		if (exception instanceof HttpException) responseDefault = exception.getResponse() as IErrorResponse;
 		if (exception instanceof ServerError) {
 			const { message, error, place } = exception;
 			this.logger.error({

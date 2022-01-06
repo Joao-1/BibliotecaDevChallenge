@@ -5,15 +5,15 @@ export default class Book {
 	@PrimaryGeneratedColumn()
 	id: number;
 
-	@Column()
+	@Column({ nullable: false })
 	title: string;
 
-	@Column()
+	@Column({ nullable: false })
 	publishingCompany: string;
 
-	@Column()
-	imgURL: string;
+	@Column({ nullable: false })
+	imageURL: string;
 
-	@Column()
+	@Column({ nullable: false })
 	authors: string;
 }

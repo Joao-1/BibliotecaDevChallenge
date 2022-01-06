@@ -4,6 +4,7 @@ import {
 	Delete,
 	Get,
 	HttpStatus,
+	Param,
 	Post,
 	Put,
 	Res,
@@ -11,14 +12,12 @@ import {
 	UseInterceptors,
 	ValidationPipe,
 } from "@nestjs/common";
-import { FileInterceptor } from "@nestjs/platform-express";
-import { randomUUID } from "crypto";
 import { Response } from "express";
-import { diskStorage } from "multer";
-import { extname } from "path";
+import fileInterceptorWithMulter from "src/helpers/getFiles";
 import BooksService from "./books.service";
-import CreateBookDto from "./dto/createBook.dto";
-import IBook from "./interfaces/book.interface";
+import CreateBookDtoBody from "./dto/createBook.dto";
+import DeleteBookDtoParam from "./dto/deleteBook.dto";
+import { PutBookDtoBody, PutBookDtoParam } from "./dto/putBook.dto";
 
 @Controller("books")
 export default class BooksController {
@@ -26,42 +25,39 @@ export default class BooksController {
 	constructor(private booksService: BooksService) {}
 
 	@Post()
-	@UseInterceptors(
-		FileInterceptor("file", {
-			storage: diskStorage({
-				filename: (req, file, cb) => {
-					const filename: string = file.originalname.replace(/\s/g, "") + randomUUID();
-					const extension: string = extname(file.originalname);
-					cb(null, `${filename}${extension}`);
-				},
-			}),
-		})
-	)
+	@UseInterceptors(fileInterceptorWithMulter("image"))
 	async create(
 		// eslint-disable-next-line no-undef
 		@UploadedFile() file: Express.Multer.File,
-		@Body(new ValidationPipe()) createBookDto: CreateBookDto,
+		@Body(new ValidationPipe()) createBookDto: CreateBookDtoBody,
 		@Res() res: Response
 	) {
-		const imgUrl = await this.booksService.uploadImage(file.path);
-		const book = createBookDto as IBook;
-		book.imageURL = imgUrl;
-		const newBook = await this.booksService.registerBook(book);
-		res.status(HttpStatus.CREATED).json({ sucess: "true", book: newBook });
+		const newBook = await this.booksService.registerBook(createBookDto, file.path);
+		res.status(HttpStatus.CREATED).json({ success: "true", book: newBook });
 	}
 
 	@Get()
-	get() {
-		return "books";
+	async get(@Res() res: Response) {
+		const books = await this.booksService.getBooks();
+		res.status(HttpStatus.OK).json({ success: "true", books });
 	}
 
 	@Put(":id")
-	update() {
-		return "updated book";
+	@UseInterceptors(fileInterceptorWithMulter("image"))
+	async update(
+		// eslint-disable-next-line no-undef
+		@UploadedFile() file: Express.Multer.File,
+		@Param(new ValidationPipe()) { id }: PutBookDtoParam,
+		@Body(new ValidationPipe()) putBookDtoBody: PutBookDtoBody,
+		@Res() res: Response
+	) {
+		const bookUpdate = await this.booksService.updateBooks(id, putBookDtoBody, file?.path);
+		res.status(HttpStatus.OK).json({ success: "true", bookUpdate });
 	}
 
 	@Delete(":id")
-	delete() {
-		return "deleted book";
+	async delete(@Param(new ValidationPipe()) { id }: DeleteBookDtoParam, @Res() res: Response) {
+		await this.booksService.removeBook(id);
+		res.status(HttpStatus.OK).json({ success: "true" });
 	}
 }

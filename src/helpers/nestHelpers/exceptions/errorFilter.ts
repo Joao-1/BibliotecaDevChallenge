@@ -2,6 +2,12 @@ import { ArgumentsHost, Catch, ExceptionFilter, HttpException, HttpStatus } from
 import { Logger } from "winston";
 import { ServerError } from "./errorsExceptions";
 
+interface IErrorResponse {
+	statusCode: number;
+	message: string;
+	error?: string;
+}
+
 @Catch(HttpException, ServerError)
 export default class HttpErrorFilter implements ExceptionFilter {
 	// eslint-disable-next-line no-unused-vars
@@ -12,10 +18,17 @@ export default class HttpErrorFilter implements ExceptionFilter {
 		const { url, method } = ctx.getRequest();
 		const response = ctx.getResponse();
 
-		const statusCode =
-			exception instanceof HttpException ? exception.getStatus() : HttpStatus.INTERNAL_SERVER_ERROR;
-		const msg = exception instanceof HttpException ? exception.message : "Internal server error";
+		let responseDefault = {
+			statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+			message: "Internal Server Error",
+		} as IErrorResponse;
 
+		if (exception instanceof HttpException) {
+			responseDefault = {
+				statusCode: exception.getStatus(),
+				message: exception.message,
+			} as IErrorResponse;
+		}
 		if (exception instanceof ServerError) {
 			const { message, error, place } = exception;
 			this.logger.error({
@@ -26,9 +39,6 @@ export default class HttpErrorFilter implements ExceptionFilter {
 			});
 		}
 
-		response.status(statusCode).json({
-			statusCode,
-			msg,
-		});
+		response.status(responseDefault.statusCode).json(responseDefault);
 	}
 }

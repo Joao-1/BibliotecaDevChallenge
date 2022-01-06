@@ -2,8 +2,14 @@ import { Injectable } from "@nestjs/common";
 import axios from "axios";
 import { readFile } from "fs";
 import { promisify } from "util";
-import { RegisterBookError, ServicesProvidersError } from "../../helpers/nestHelpers/exceptions/errorsExceptions";
+import {
+	DeleteBookError,
+	RegisterBookError,
+	ServicesProvidersError,
+} from "../../helpers/nestHelpers/exceptions/errorsExceptions";
 import BookRepository from "./books.repository";
+import BodyCreateBookDto from "./dto/createBook.dto";
+import { PutBookDtoBody } from "./dto/putBook.dto";
 import IBook from "./interfaces/book.interface";
 
 require("dotenv").config();
@@ -32,11 +38,33 @@ export default class BooksService {
 		}
 	}
 
-	async registerBook(book: IBook) {
-		if (await this.BooksRepository.checkIfBookAlreadyExists(book.title)) {
-			throw new RegisterBookError.BookAlreadyExists(book.title);
+	async registerBook(bookWithoutImage: BodyCreateBookDto, imagePath: string) {
+		if (await this.BooksRepository.checkIfBookExistsByTitle(bookWithoutImage.title)) {
+			throw new RegisterBookError.BookAlreadyExists(bookWithoutImage.title);
 		}
 
-		return this.BooksRepository.create(book);
+		const imgUrl = await this.uploadImage(imagePath);
+		const book = bookWithoutImage as unknown as IBook;
+		book.imageURL = imgUrl;
+
+		return this.BooksRepository.insertNewBook(book);
+	}
+
+	async getBooks() {
+		return this.BooksRepository.getAllBooks();
+	}
+
+	async updateBooks(bookId: number, body: PutBookDtoBody, imagePath: string) {
+		const newImageURL = imagePath ? await this.uploadImage(imagePath) : null;
+		const newValues = body as unknown as IBook;
+		if (newImageURL) newValues.imageURL = newImageURL;
+		return this.BooksRepository.updateABook(bookId, newValues);
+	}
+
+	async removeBook(bookId: number) {
+		if (!(await this.BooksRepository.checkIfBookExistsById(bookId))) {
+			throw new DeleteBookError.BookWithThisIdDoesNotExists(bookId);
+		}
+		return this.BooksRepository.deleteABook(bookId);
 	}
 }

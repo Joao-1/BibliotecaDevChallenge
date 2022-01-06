@@ -5,5 +5,5 @@ export default class IBook {
 
 	imageURL: string;
 
-	authors: string[];
+	authors: string;
 }

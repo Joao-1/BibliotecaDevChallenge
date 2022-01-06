@@ -27,3 +27,11 @@ export namespace RegisterBookError {
 		}
 	}
 }
+
+export namespace DeleteBookError {
+	export class BookWithThisIdDoesNotExists extends HttpException {
+		constructor(bookId: number) {
+			super(`There is no book id ${bookId} registered in the database`, 422);
+		}
+	}
+}

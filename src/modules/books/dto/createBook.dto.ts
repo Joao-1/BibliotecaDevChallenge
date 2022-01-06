@@ -1,6 +1,6 @@
 import { IsArray, IsString } from "class-validator";
 
-export default class CreateBookDto {
+export default class BodyCreateBookDto {
 	@IsString()
 	title: string;
 
@@ -9,4 +9,6 @@ export default class CreateBookDto {
 
 	@IsArray()
 	authors: string[];
+
+	image: string;
 }

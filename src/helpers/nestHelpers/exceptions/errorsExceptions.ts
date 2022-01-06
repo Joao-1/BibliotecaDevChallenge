@@ -1,5 +1,5 @@
 /* eslint-disable max-classes-per-file */
-import { HttpException } from "@nestjs/common";
+import { HttpException, HttpStatus } from "@nestjs/common";
 
 export class ServerError {
 	// eslint-disable-next-line no-unused-vars
@@ -21,9 +21,26 @@ export namespace ServicesProvidersError {
 }
 
 export namespace RegisterBookError {
+	export class BookImageNotProvided extends HttpException {
+		constructor() {
+			super(
+				{
+					statusCode: HttpStatus.UNPROCESSABLE_ENTITY,
+					message: "An image of the book is required for registration",
+				},
+				HttpStatus.UNPROCESSABLE_ENTITY
+			);
+		}
+	}
 	export class BookAlreadyExists extends HttpException {
 		constructor(bookTitle: string) {
-			super({ statusCode: 422, message: `There is already a book with ${bookTitle} title` }, 422);
+			super(
+				{
+					statusCode: HttpStatus.UNPROCESSABLE_ENTITY,
+					message: `There is already a book with ${bookTitle} title`,
+				},
+				HttpStatus.UNPROCESSABLE_ENTITY
+			);
 		}
 	}
 }
@@ -31,7 +48,13 @@ export namespace RegisterBookError {
 export namespace DeleteBookError {
 	export class BookWithThisIdDoesNotExists extends HttpException {
 		constructor(bookId: number) {
-			super({ statusCode: 422, message: `There is no book id ${bookId} registered in the database` }, 422);
+			super(
+				{
+					statusCode: HttpStatus.UNPROCESSABLE_ENTITY,
+					message: `There is no book id ${bookId} registered in the database`,
+				},
+				HttpStatus.UNPROCESSABLE_ENTITY
+			);
 		}
 	}
 }

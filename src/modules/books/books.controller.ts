@@ -14,6 +14,7 @@ import {
 } from "@nestjs/common";
 import { Response } from "express";
 import fileInterceptorWithMulter from "src/helpers/getFiles";
+import { RegisterBookError } from "src/helpers/nestHelpers/exceptions/errorsExceptions";
 import BooksService from "./books.service";
 import CreateBookDtoBody from "./dto/createBook.dto";
 import DeleteBookDtoParam from "./dto/deleteBook.dto";
@@ -32,6 +33,7 @@ export default class BooksController {
 		@Body(new ValidationPipe()) createBookDto: CreateBookDtoBody,
 		@Res() res: Response
 	) {
+		if (!file) throw new RegisterBookError.BookImageNotProvided();
 		const newBook = await this.booksService.registerBook(createBookDto, file.path);
 		res.status(HttpStatus.CREATED).json({ success: "true", book: newBook });
 	}

@@ -9,6 +9,4 @@ export default class BodyCreateBookDto {
 
 	@IsArray()
 	authors: string[];
-
-	image: string;
 }

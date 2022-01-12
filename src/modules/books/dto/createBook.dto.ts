@@ -1,6 +1,6 @@
 import { IsArray, IsString } from "class-validator";
 
-export default class BodyCreateBookDto {
+export default class CreateBookDtoBody {
 	@IsString()
 	title: string;
 

@@ -1,5 +1,20 @@
 /* eslint-disable max-classes-per-file */
 import { HttpException, HttpStatus } from "@nestjs/common";
+/* eslint-disable max-classes-per-file */
+
+namespace CommumErros {
+	export class WithThisIdDoesNotExists extends HttpException {
+		constructor(bookId: number) {
+			super(
+				{
+					statusCode: HttpStatus.UNPROCESSABLE_ENTITY,
+					message: `There is no book id ${bookId} registered in the database`,
+				},
+				HttpStatus.UNPROCESSABLE_ENTITY
+			);
+		}
+	}
+}
 
 export class ServerError {
 	// eslint-disable-next-line no-unused-vars
@@ -45,16 +60,18 @@ export namespace RegisterBookError {
 	}
 }
 
-export namespace DeleteBookError {
-	export class BookWithThisIdDoesNotExists extends HttpException {
+export namespace UpdateBookError {
+	export class BookWithThisIdDoesNotExists extends CommumErros.WithThisIdDoesNotExists {
 		constructor(bookId: number) {
-			super(
-				{
-					statusCode: HttpStatus.UNPROCESSABLE_ENTITY,
-					message: `There is no book id ${bookId} registered in the database`,
-				},
-				HttpStatus.UNPROCESSABLE_ENTITY
-			);
+			super(bookId);
+		}
+	}
+}
+
+export namespace DeleteBookError {
+	export class BookWithThisIdDoesNotExists extends CommumErros.WithThisIdDoesNotExists {
+		constructor(bookId: number) {
+			super(bookId);
 		}
 	}
 }

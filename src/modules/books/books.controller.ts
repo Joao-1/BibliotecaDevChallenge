@@ -53,8 +53,8 @@ export default class BooksController {
 		@Body(new ValidationPipe()) putBookDtoBody: PutBookDtoBody,
 		@Res() res: Response
 	) {
-		const bookUpdate = await this.booksService.updateBooks(id, putBookDtoBody, file?.path);
-		res.status(HttpStatus.OK).json({ success: "true", bookUpdate });
+		const bookUpdated = await this.booksService.updateBooks(id, putBookDtoBody, file?.path);
+		res.status(HttpStatus.OK).json({ success: "true", bookUpdated });
 	}
 
 	@Delete(":id")

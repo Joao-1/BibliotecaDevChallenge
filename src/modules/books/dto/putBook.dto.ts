@@ -9,16 +9,16 @@ export class PutBookDtoParam {
 export class PutBookDtoBody {
 	@IsOptional()
 	@IsString()
-	title: string;
+	title?: string;
 
 	@IsOptional()
 	@IsString()
-	publishingCompany: string;
+	publishingCompany?: string;
 
 	@IsOptional()
 	@IsArray()
-	authors: string[];
+	authors?: string[];
 
 	@IsOptional()
-	image: string;
+	image?: string;
 }

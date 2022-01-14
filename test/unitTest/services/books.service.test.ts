@@ -1,11 +1,11 @@
-import { Test, TestingModule } from "@nestjs/testing";
-import { DeleteResult } from "typeorm";
 /* eslint-disable no-empty-function */
 /* eslint-disable no-undef */
-import ImgurService from "../../src/helpers/APIs/imgurApi";
-import BookRepository from "../../src/modules/books/books.repository";
-import BooksService from "../../src/modules/books/books.service";
-import TestHelper from "../helpers/TestHelper";
+import { Test, TestingModule } from "@nestjs/testing";
+import { DeleteResult } from "typeorm";
+import ImgurService from "../../../src/helpers/APIs/imgurApi";
+import BookRepository from "../../../src/modules/books/books.repository";
+import BooksService from "../../../src/modules/books/books.service";
+import TestHelper from "../../testHelpers/TestHelper";
 
 describe("BooksService", () => {
 	let service: BooksService;

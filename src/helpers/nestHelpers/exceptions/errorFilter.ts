@@ -1,6 +1,6 @@
 import { ArgumentsHost, Catch, ExceptionFilter, HttpException, HttpStatus } from "@nestjs/common";
 import { Logger } from "winston";
-import { ServerError } from "./errorsExceptions";
+import { ServerErrors } from "./errorsExceptions";
 
 interface IErrorResponse {
 	statusCode: number;
@@ -8,12 +8,12 @@ interface IErrorResponse {
 	error?: string;
 }
 
-@Catch(HttpException, ServerError)
+@Catch(HttpException, ServerErrors)
 export default class HttpErrorFilter implements ExceptionFilter {
 	// eslint-disable-next-line no-unused-vars
 	constructor(private logger: Logger) {}
 
-	catch(exception: HttpException | ServerError, host: ArgumentsHost) {
+	catch(exception: HttpException | ServerErrors, host: ArgumentsHost) {
 		const ctx = host.switchToHttp();
 		const { url, method } = ctx.getRequest();
 		const response = ctx.getResponse();
@@ -24,7 +24,7 @@ export default class HttpErrorFilter implements ExceptionFilter {
 		} as IErrorResponse;
 
 		if (exception instanceof HttpException) responseDefault = exception.getResponse() as IErrorResponse;
-		if (exception instanceof ServerError) {
+		if (exception instanceof ServerErrors) {
 			const { message, error, place } = exception;
 			this.logger.error({
 				msg: message,

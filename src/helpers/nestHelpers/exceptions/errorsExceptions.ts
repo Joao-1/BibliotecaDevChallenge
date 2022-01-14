@@ -1,8 +1,7 @@
 /* eslint-disable max-classes-per-file */
 import { HttpException, HttpStatus } from "@nestjs/common";
-/* eslint-disable max-classes-per-file */
 
-namespace CommumErros {
+export namespace CommumError {
 	export class WithThisIdDoesNotExists extends HttpException {
 		constructor(bookId: number) {
 			super(
@@ -16,19 +15,19 @@ namespace CommumErros {
 	}
 }
 
-export class ServerError {
+export class ServerErrors {
 	// eslint-disable-next-line no-unused-vars
 	constructor(public message: string, public error: unknown, public place: string) {}
 }
 
-export class DataBaseError extends ServerError {
+export class DataBaseError extends ServerErrors {
 	constructor(message: string, error: unknown, repository: string) {
 		super(message, error, repository);
 	}
 }
 
 export namespace ServicesProvidersError {
-	export class ImgurError extends ServerError {
+	export class ImgurError extends ServerErrors {
 		constructor(error: unknown, place: string) {
 			super("An error occurred while consuming the Imgur service.", error, place);
 		}
@@ -61,7 +60,7 @@ export namespace RegisterBookError {
 }
 
 export namespace UpdateBookError {
-	export class BookWithThisIdDoesNotExists extends CommumErros.WithThisIdDoesNotExists {
+	export class BookWithThisIdDoesNotExists extends CommumError.WithThisIdDoesNotExists {
 		constructor(bookId: number) {
 			super(bookId);
 		}
@@ -69,7 +68,7 @@ export namespace UpdateBookError {
 }
 
 export namespace DeleteBookError {
-	export class BookWithThisIdDoesNotExists extends CommumErros.WithThisIdDoesNotExists {
+	export class BookWithThisIdDoesNotExists extends CommumError.WithThisIdDoesNotExists {
 		constructor(bookId: number) {
 			super(bookId);
 		}
